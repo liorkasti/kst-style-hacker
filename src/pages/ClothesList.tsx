@@ -72,10 +72,8 @@ const ClothesList: FC = () => {
   }, []);
 
   const handleSelectItem = (item: ClothingItemType) => {
-    // setSelectedItem(item);
-    // console.log("item", item);
     const recommendations = getRecommendations(item, clothingItems);
-    console.log({ recommendations });
+    console.log(getNextType(item.type), { recommendations });
     dispatch(selectClothes(item));
 
     if (recommendations.length > 0) {

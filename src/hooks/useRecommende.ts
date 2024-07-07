@@ -1,11 +1,11 @@
-import { ClothingItemType } from "../constants/types";
 import { sizeMapping, colorCombination } from "../constants/recommendations";
+import { ClothingItemType } from "../constants/types";
 
 export const getRecommendations = (
   selectedItem: ClothingItemType,
-  allItems: ClothingItemType[]
+  clothingItems: ClothingItemType[]
 ): ClothingItemType[] => {
-  if (!allItems) return [];
+  if (!clothingItems) return [];
 
   const recommendedItems: ClothingItemType[] = [];
 
@@ -13,7 +13,7 @@ export const getRecommendations = (
   const sizeRecommendations =
     sizeMapping[selectedItem.type]?.[selectedItem.size];
   if (sizeRecommendations) {
-    const sizeFilteredItems = allItems.filter((item) =>
+    const sizeFilteredItems = clothingItems.filter((item) =>
       sizeRecommendations.includes(item.size)
     );
     recommendedItems.push(...sizeFilteredItems);
@@ -22,21 +22,32 @@ export const getRecommendations = (
   // Step 2: Recommend based on color
   const colorRecommendations = colorCombination[selectedItem.color];
   if (colorRecommendations) {
-    const colorFilteredItems = allItems.filter((item) =>
+    const colorFilteredItems = clothingItems.filter((item) =>
       colorRecommendations.includes(item.color)
     );
     recommendedItems.push(...colorFilteredItems);
   }
 
-  // Remove duplicates
   const uniqueRecommendedItems = Array.from(new Set(recommendedItems));
 
-  // Exclude the selected item itself
   return uniqueRecommendedItems.filter((item) => item.id !== selectedItem.id);
 };
 
+// קבלת מידות מומלצות לפי סוגים שונים
+export function getRecommendedSizes(type: string, size: string): string[] {
+  const sizeTypeMapping = sizeMapping[type];
+  if (!sizeTypeMapping || !sizeTypeMapping[size]) return [];
+  return Object.values(sizeTypeMapping[size]);
+}
+// קבלת צבעים מומלצים
+export function getRecommendedColors(color: string): string[] {
+  return colorCombination[color] || [];
+}
+
 export const getNextType = (currentType: string): string => {
-  const types = ["shoes", "shirts", "pants"];
+  const types = ["shoes", "shirt", "pants"];
   const currentIndex = types.indexOf(currentType);
-  return types[(currentIndex + 1) % types.length];
+  return currentIndex >= 0 && currentIndex < types.length - 1
+    ? types[currentIndex + 1]
+    : types[0];
 };
