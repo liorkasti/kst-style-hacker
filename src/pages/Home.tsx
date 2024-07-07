@@ -10,16 +10,11 @@ import { RootState } from "../store";
 
 const Home: FC = () => {
   const [selectedItems, setSelectedItems] = useState<ClothingItemType[]>([]);
-  const [itemCounts, setItemCounts] = useState({
-    shoes: 0,
-    shirts: 0,
-    pants: 0,
-  });
   const dispatch = useDispatch();
 
   const { data: clothingItems, isLoading: loadingItems } = useClothingItems();
 
-  const { items, filteredItems, selected } = useSelector(
+  const { items, shoesCount, shirtsCount, pantsCount, selected } = useSelector(
     (state: RootState) => state.clothes
   );
   console.log({ /* items, filteredItems,  */ selected });
@@ -29,22 +24,9 @@ const Home: FC = () => {
   useEffect(() => {
     if (clothingItems) {
       dispatch(setClothes(clothingItems));
-      const shoesCount = clothingItems.filter(
-        (item) => item.type === "shoes"
-      ).length;
-      const shirtsCount = clothingItems.filter(
-        (item) => item.type === "shirt"
-      ).length;
-      const pantsCount = clothingItems.filter(
-        (item) => item.type === "pants"
-      ).length;
-      setItemCounts({
-        shoes: shoesCount,
-        shirts: shirtsCount,
-        pants: pantsCount,
-      });
+      console.log({ items });
     }
-  }, [clothingItems, dispatch]);
+  }, [items, dispatch]);
 
   useEffect(() => {
     const savedSelectedItems = JSON.parse(
@@ -64,11 +46,7 @@ const Home: FC = () => {
             <Typography>
               <Typography>
                 {SERVICES.AVAILABLE_SHOES}
-                {loadingItems ? (
-                  <CircularProgress size={12} />
-                ) : (
-                  itemCounts.shoes
-                )}
+                {loadingItems ? <CircularProgress size={12} /> : shoesCount}
               </Typography>
             </Typography>
           </Grid>
@@ -76,11 +54,7 @@ const Home: FC = () => {
             <Typography>
               <Typography>
                 {SERVICES.AVAILABLE_SHIRTS}
-                {loadingItems ? (
-                  <CircularProgress size={12} />
-                ) : (
-                  itemCounts.shirts
-                )}
+                {loadingItems ? <CircularProgress size={12} /> : shirtsCount}
               </Typography>
             </Typography>
           </Grid>
@@ -88,11 +62,7 @@ const Home: FC = () => {
             <Typography>
               <Typography>
                 {SERVICES.AVAILABLE_PANTS}
-                {loadingItems ? (
-                  <CircularProgress size={12} />
-                ) : (
-                  itemCounts.pants
-                )}
+                {loadingItems ? <CircularProgress size={12} /> : pantsCount}
               </Typography>
             </Typography>
           </Grid>
@@ -109,9 +79,9 @@ const Home: FC = () => {
               variant='contained'
               color='primary'
               // color={
-              //   selectedItems.some((item) => item.type === 'shoes')
-              //     ? 'secondary'
-              //     : 'primary'
+              //   selected.some((item) => item.type === "shoes")
+              //     ? "secondary"
+              //     : "primary"
               // }
               onClick={() => navigate("/clothing-list?type=shoes")}
               // disabled={selectedItem === 'shoes'}

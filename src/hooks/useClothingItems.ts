@@ -24,20 +24,13 @@ export const useClothesTypeItems = (type: string) => {
     queryFn: fetchClothes,
   });
   if (isSuccess && type !== "") {
-    const clothingTypeItems = data.filter((item) => item.type === type);
-    return {
-      data: clothingTypeItems as ClothingItemType[],
-      isError,
-      isLoading,
-      isFetching,
-      error,
-    };
+    data.filter((item) => item.type === type);
   }
   return {
     data: data as ClothingItemType[],
     isError,
     isLoading,
     isFetching,
-    error: error as Error,
+    error,
   };
 };

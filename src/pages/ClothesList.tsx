@@ -29,9 +29,8 @@ import {
 import { saveOutfit } from "../store/slices/outfits-slice";
 
 const ClothesList: FC = () => {
-  const [selectedItem, setSelectedItem] = useState<ClothingItemType | null>(
-    null
-  );
+  const [recommendations, setRecommendations] =
+    useState<ClothingItemType | null>();
   const [selectedSize, setSelectedSize] = useState<SizeType | "">("");
   const [selectedColor, setSelectedColor] = useState<ColorType | "">("");
   const [open, setOpen] = useState(false);
@@ -77,6 +76,7 @@ const ClothesList: FC = () => {
     dispatch(selectClothes(item));
 
     if (recommendations.length > 0) {
+      setRecommendations(recommendations);
       navigate(`/clothing-list?type=${getNextType(item.type)}`, {
         state: { recommendations },
       });
@@ -95,6 +95,51 @@ const ClothesList: FC = () => {
 
   return (
     <Box className={classes.root}>
+      <Typography mb={2} variant='h4'>
+        {SERVICES.SELECT_TYPE}
+        {type}
+      </Typography>
+      {recommendations ? (
+        <>
+          <Typography mb={2} variant='h4'>
+            Recommendations:
+          </Typography>
+          <Grid
+            container
+            spacing={2}
+            direction='row'
+            justifyContent='center'
+            alignItems='center'>
+            {recommendations.map((item: ClothingItemType) => (
+              <Grid item key={item.id} xs={12} sm={6} md={4} lg={3}>
+                <Paper className={classes.card} elevation={3}>
+                  <Grid container alignItems='center' spacing={2}>
+                    <Grid item xs={4}>
+                      <img
+                        className={classes.image}
+                        src='https://via.placeholder.com/100'
+                        alt={`${item.brand} ${item.type}`}
+                      />
+                    </Grid>
+                    <Grid item xs={8}>
+                      <Typography variant='h6'>{item.brand}</Typography>
+                      <Typography>{`${SERVICES.SIZE}: ${item.size}`}</Typography>
+                      <Typography>{`${SERVICES.COLOR}: ${item.color}`}</Typography>
+                      <Button
+                        variant='contained'
+                        color='primary'
+                        className={classes.button}
+                        onClick={() => handleSelectItem(item)}>
+                        {SERVICES.SELECT}
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
+        </>
+      ) : null}
       <Box p={4}>
         <FilterClothing
           type={type}
