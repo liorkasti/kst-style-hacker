@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Outfit } from "../../constants/types";
-
+//TODO: Add the sets saved logic
 interface OutfitsState {
   outfits: Outfit[];
 }

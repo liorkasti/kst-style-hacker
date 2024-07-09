@@ -1,21 +1,21 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  ArrowBack as ArrowBackIcon,
+  Menu as MenuIcon,
+} from "@mui/icons-material";
 import {
   AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
+  Box,
+  Divider,
   Drawer,
+  IconButton,
   List,
   ListItem,
   ListItemText,
-  Divider,
-  Box,
+  Toolbar,
+  Typography,
 } from "@mui/material";
-import {
-  Menu as MenuIcon,
-  ArrowBack as ArrowBackIcon,
-} from "@mui/icons-material";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { SCREEN_NAMES, SERVICES } from "../constants/strings";
 import { useStyles } from "../constants/styles";
 
@@ -45,7 +45,6 @@ const Header: React.FC<HeaderProps> = ({ title, showBackButton = false }) => {
     <div>
       <AppBar position='fixed' className={classes.appBar}>
         <Toolbar className={classes.toolBar}>
-          {/* <Login /> */}
           {showBackButton && (
             <IconButton
               edge='start'

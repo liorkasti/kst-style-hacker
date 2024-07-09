@@ -1,17 +1,18 @@
-import React from "react";
-import { Grid, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import { SERVICES } from "../constants/strings";
+import { FormControl, Grid, InputLabel, MenuItem, Select } from "@mui/material";
+import { FC } from "react";
 import { colorCombination, sizeMapping } from "../constants/recommendations";
+import { SERVICES } from "../constants/strings";
+import { ClotheSizeType, ColorType } from "../constants/types";
 
 interface FilterClothingProps {
   selectedSize: string;
-  setSelectedSize: (size: string) => void;
-  selectedColor: string;
-  setSelectedColor: (color: string) => void;
+  setSelectedSize: (size: ClotheSizeType) => void;
+  selectedColor: ColorType;
+  setSelectedColor: (color: ColorType) => void;
   type: string;
 }
 
-const FilterClothing: React.FC<FilterClothingProps> = ({
+const FilterClothing: FC<FilterClothingProps> = ({
   selectedSize,
   setSelectedSize,
   selectedColor,
@@ -25,7 +26,8 @@ const FilterClothing: React.FC<FilterClothingProps> = ({
           <InputLabel>{SERVICES.FILTER_BY_SIZE}</InputLabel>
           <Select
             value={selectedSize}
-            onChange={(e) => setSelectedSize(e.target.value as string)}
+            // defaultValue={"None"}
+            onChange={(e) => setSelectedSize(e.target.value as ClotheSizeType)}
             label={SERVICES.FILTER_BY_SIZE}>
             <MenuItem value=''>
               <em>None</em>
@@ -43,7 +45,7 @@ const FilterClothing: React.FC<FilterClothingProps> = ({
           <InputLabel>{SERVICES.FILTER_BY_COLOR}</InputLabel>
           <Select
             value={selectedColor}
-            onChange={(e) => setSelectedColor(e.target.value as string)}
+            onChange={(e) => setSelectedColor(e.target.value as ColorType)}
             label={SERVICES.FILTER_BY_COLOR}>
             <MenuItem value=''>
               <em>None</em>

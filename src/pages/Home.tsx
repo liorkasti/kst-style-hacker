@@ -1,49 +1,34 @@
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Grid,
-  Paper,
-  Typography,
-} from "@mui/material";
-import { FC, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
+import { FC } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { SERVICES } from "../constants/strings";
-import { ClothingItemType } from "../constants/types";
-import { useClothingItems } from "../hooks/useClothingItems";
-import { useDispatch, useSelector } from "react-redux";
-import { setClothes } from "../store/slices/clothes-slice";
+import { useClothesTypeItems } from "../hooks/useClothingItems";
 import { RootState } from "../store";
-import { useStyles } from "../constants/styles";
 
 const Home: FC = () => {
-  const [selectedItems, setSelectedItems] = useState<ClothingItemType[]>([]);
-  const dispatch = useDispatch();
-
-  const { data: clothingItems, isLoading: loadingItems } = useClothingItems();
-
-  const { items, shoesCount, shirtsCount, pantsCount, selected } = useSelector(
-    (state: RootState) => state.clothes
-  );
+  const { data: clothingItems, isLoading: loadingItems } =
+    useClothesTypeItems("");
+  const {
+    items,
+    filteredItems,
+    selected,
+    shoesCount,
+    shirtsCount,
+    pantsCount,
+  } = useSelector((state: RootState) => state.clothes);
 
   const navigate = useNavigate();
-  const classes = useStyles();
 
-  useEffect(() => {
-    if (clothingItems) {
-      dispatch(setClothes(items));
-      console.log({ items });
-      localStorage.setItem("clothingItems", JSON.stringify(items));
-    }
-  }, [items, dispatch]);
-
-  useEffect(() => {
-    const savedSelectedItems = JSON.parse(
-      localStorage.getItem("selectedItems") || "[]"
-    );
-    setSelectedItems(savedSelectedItems);
-  }, []);
-
+  console.log({
+    clothingItems,
+    items,
+    filteredItems,
+    shoesCount,
+    shirtsCount,
+    pantsCount,
+    selected,
+  });
   return (
     <Box>
       <Box p={4}>
@@ -77,12 +62,7 @@ const Home: FC = () => {
           </Grid>
         </Grid>
 
-        <Grid
-          container
-          direction='column'
-          alignItems='center'
-          spacing={2}
-          mt={4}>
+        <Grid container direction='column' spacing={2} mt={2}>
           <Grid item>
             <Button
               variant='contained'
@@ -114,24 +94,6 @@ const Home: FC = () => {
               onClick={() => navigate("/clothing-list?type=pants")}>
               {SERVICES.SELECT_PANTS}
             </Button>
-          </Grid>
-        </Grid>
-      </Box>
-      <Box p={4}>
-        <Grid container spacing={2} justifyContent='space-between'>
-          <Grid item>
-            <Link to='/clothing-list'>
-              <Button variant='contained' color='primary'>
-                Select Clothes
-              </Button>
-            </Link>
-          </Grid>
-          <Grid item>
-            <Link to='/saved-sets'>
-              <Button variant='contained' color='primary'>
-                View Saved Sets
-              </Button>
-            </Link>
           </Grid>
         </Grid>
       </Box>

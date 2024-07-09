@@ -8,40 +8,34 @@ import {
   DialogContentText,
   DialogTitle,
   Grid,
-  Paper,
   Typography,
 } from "@mui/material";
-import { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
+import ClothingItem from "../components/ClothingItem";
 import FilterClothing from "../components/FilterClothing";
 import { SERVICES } from "../constants/strings";
 import { useStyles } from "../constants/styles";
 import {
+  ClotheSizeType,
   ClothingItemType,
   ColorType,
-  PantsSizeType,
-  ShirtSizeType,
-  ShoesSizeType,
 } from "../constants/types";
-import { useClothesTypeItems } from "../hooks/useClothingItems";
+import {
+  useClothesTypeItems,
+  useSelectedItems,
+} from "../hooks/useClothingItems";
 import { getNextType, getRecommendations } from "../hooks/useRecommende";
 import { RootState } from "../store";
-import {
-  filtereClothes,
-  selectClothes,
-  setFilteredClothes,
-} from "../store/slices/clothes-slice";
-import { saveOutfit } from "../store/slices/outfits-slice";
-import ClothingItem from "../components/ClothingItem";
+import { selectClothes, setFilteredItems } from "../store/slices/clothes-slice";
 
 const ClothesList: FC = () => {
-  const [recommendations, setRecommendations] =
-    useState<ClothingItemType | null>();
-  const [selectedSize, setSelectedSize] = useState<
-    ShirtSizeType | ShoesSizeType | PantsSizeType
-  >("");
-  const [selectedColor, setSelectedColor] = useState<ColorType | "">("");
+  const [recommendations, setRecommendations] = useState<ClothingItemType[]>(
+    []
+  );
+  const [selectedSize, setSelectedSize] = useState<ClotheSizeType>("");
+  const [selectedColor, setSelectedColor] = useState<ColorType>("");
   const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -50,40 +44,48 @@ const ClothesList: FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const {
-    data: clothingTypeItems,
-    isLoading,
-    error,
-  } = useClothesTypeItems(type);
-  const clothingItems = useSelector((state: RootState) => state.clothes.items);
+  const { data: clothingItems, isLoading, error } = useClothesTypeItems(type);
+  const { items, filteredItems } = useSelector(
+    (state: RootState) => state.clothes
+  );
 
-  const filteredItems = useMemo(() => {
-    if (!clothingItems) return [];
-    let items = clothingItems.filter(
-      (item: ClothingItemType) => item.type === type
-    );
-    if (selectedSize) {
-      items = items.filter((item) => item.size == selectedSize);
+  useEffect(() => {
+    if (items) {
+      dispatch(setFilteredItems(type));
     }
-    if (selectedColor) {
-      items = items.filter(
+    return () => {
+      setRecommendations([]);
+      setSelectedSize("");
+      setSelectedColor("");
+    };
+  }, []);
+
+  const filtered = useMemo(() => {
+    if (!filteredItems) return [];
+    let renderFilteredItems = filteredItems;
+
+    if (selectedSize && selectedColor) {
+      renderFilteredItems = renderFilteredItems.filter(
+        (item) =>
+          item.size == selectedSize &&
+          item.color.toLowerCase() === selectedColor.toLowerCase()
+      );
+    } else if (selectedSize) {
+      renderFilteredItems = renderFilteredItems.filter(
+        (item) => item.size == selectedSize
+      );
+    } else if (selectedColor) {
+      renderFilteredItems = renderFilteredItems.filter(
         (item) => item.color.toLowerCase() === selectedColor.toLowerCase()
       );
     }
-    console.log({ items, clothingTypeItems, clothingItems });
-    return items;
-  }, [clothingTypeItems, type, selectedSize, selectedColor]);
-
-  useEffect(() => {
-    if (clothingTypeItems) {
-      dispatch(setFilteredClothes(clothingTypeItems));
-    }
-  }, []);
+    return renderFilteredItems;
+  }, [filteredItems, selectedSize, selectedColor, type]);
 
   const handleSelectItem = (item: ClothingItemType) => {
-    const recommendations = getRecommendations(item, clothingItems);
-    console.log(getNextType(item.type), { recommendations });
+    const recommendations: ClothingItemType[] = getRecommendations(item, items);
     dispatch(selectClothes(item));
+    // TODO: useMutation-> useSelectedItems(item).selectItem();
 
     if (recommendations.length > 0) {
       setRecommendations(recommendations);
@@ -103,13 +105,19 @@ const ClothesList: FC = () => {
   if (isLoading) return <CircularProgress />;
   if (error) return <Typography>Error loading items</Typography>;
 
+  console.log({
+    clothingItems,
+    items,
+    filteredItems,
+    filtered,
+  });
   return (
     <Box className={classes.root}>
       <Typography mb={2} variant='h4'>
         {SERVICES.SELECT_TYPE}
         {type}
       </Typography>
-      {recommendations ? (
+      {recommendations.length ? (
         <>
           <Typography mb={2} variant='h4'>
             Recommendations:
@@ -145,7 +153,7 @@ const ClothesList: FC = () => {
           direction='row'
           justifyContent='center'
           alignItems='center'>
-          {filteredItems.map((item: ClothingItemType) => (
+          {filtered.map((item: ClothingItemType) => (
             <Grid item key={item.id} xs={12} sm={6} md={4} lg={3}>
               <ClothingItem
                 item={item}
