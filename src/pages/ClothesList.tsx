@@ -17,7 +17,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import FilterClothing from "../components/FilterClothing";
 import { SERVICES } from "../constants/strings";
 import { useStyles } from "../constants/styles";
-import { ClothingItemType, ColorType, SizeType } from "../constants/types";
+import {
+  ClothingItemType,
+  ColorType,
+  PantsSizeType,
+  ShirtSizeType,
+  ShoesSizeType,
+} from "../constants/types";
 import { useClothesTypeItems } from "../hooks/useClothingItems";
 import { getNextType, getRecommendations } from "../hooks/useRecommende";
 import { RootState } from "../store";
@@ -32,7 +38,9 @@ import ClothingItem from "../components/ClothingItem";
 const ClothesList: FC = () => {
   const [recommendations, setRecommendations] =
     useState<ClothingItemType | null>();
-  const [selectedSize, setSelectedSize] = useState<SizeType | "">("");
+  const [selectedSize, setSelectedSize] = useState<
+    ShirtSizeType | ShoesSizeType | PantsSizeType
+  >("");
   const [selectedColor, setSelectedColor] = useState<ColorType | "">("");
   const [open, setOpen] = useState(false);
 
@@ -50,18 +58,19 @@ const ClothesList: FC = () => {
   const clothingItems = useSelector((state: RootState) => state.clothes.items);
 
   const filteredItems = useMemo(() => {
-    if (!clothingTypeItems) return [];
-    let items = clothingTypeItems.filter(
+    if (!clothingItems) return [];
+    let items = clothingItems.filter(
       (item: ClothingItemType) => item.type === type
     );
     if (selectedSize) {
-      items = items.filter((item) => item.size === selectedSize);
+      items = items.filter((item) => item.size == selectedSize);
     }
     if (selectedColor) {
       items = items.filter(
         (item) => item.color.toLowerCase() === selectedColor.toLowerCase()
       );
     }
+    console.log({ items, clothingTypeItems, clothingItems });
     return items;
   }, [clothingTypeItems, type, selectedSize, selectedColor]);
 

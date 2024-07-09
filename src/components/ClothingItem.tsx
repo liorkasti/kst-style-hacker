@@ -1,12 +1,4 @@
-import {
-  Button,
-  Card,
-  CardContent,
-  CardMedia,
-  Grid,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Button, Grid, Paper, Typography } from "@mui/material";
 import { FC } from "react";
 import { SERVICES } from "../constants/strings";
 import { useStyles } from "../constants/styles";
