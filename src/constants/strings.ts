@@ -28,4 +28,7 @@ export const SERVICES = {
   SELECT: "Select",
   SELECTED: "Selected",
   SAVE_SET: "Save set",
+  DELETE_OUTFIT: "Delete Outfit",
+  SAVED_OUTFITS_TITLE: "Saved Outfits",
+  NO_SAVED_OUTFITS: "No saved outfits available",
 };

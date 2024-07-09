@@ -1,4 +1,11 @@
-import { Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { SERVICES } from "../constants/strings";
@@ -7,6 +14,7 @@ import { useClothingItems } from "../hooks/useClothingItems";
 import { useDispatch, useSelector } from "react-redux";
 import { setClothes } from "../store/slices/clothes-slice";
 import { RootState } from "../store";
+import { useStyles } from "../constants/styles";
 
 const Home: FC = () => {
   const [selectedItems, setSelectedItems] = useState<ClothingItemType[]>([]);
@@ -17,14 +25,15 @@ const Home: FC = () => {
   const { items, shoesCount, shirtsCount, pantsCount, selected } = useSelector(
     (state: RootState) => state.clothes
   );
-  console.log({ /* items, filteredItems,  */ selected });
 
   const navigate = useNavigate();
+  const classes = useStyles();
 
   useEffect(() => {
     if (clothingItems) {
-      dispatch(setClothes(clothingItems));
+      dispatch(setClothes(items));
       console.log({ items });
+      localStorage.setItem("clothingItems", JSON.stringify(items));
     }
   }, [items, dispatch]);
 
@@ -108,7 +117,6 @@ const Home: FC = () => {
           </Grid>
         </Grid>
       </Box>
-
       <Box p={4}>
         <Grid container spacing={2} justifyContent='space-between'>
           <Grid item>

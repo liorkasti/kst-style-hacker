@@ -2,27 +2,27 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Outfit } from "../../constants/types";
 
 interface OutfitsState {
-  savedOutfits: Outfit[];
+  outfits: Outfit[];
 }
 
 const initialState: OutfitsState = {
-  savedOutfits: [],
+  outfits: [],
 };
 
 const outfitsSlice = createSlice({
   name: "outfits",
   initialState,
   reducers: {
-    saveOutfit: (state, action: PayloadAction<Outfit>) => {
-      state.savedOutfits.push(action.payload);
+    addToOutfit: (state, action: PayloadAction<Outfit>) => {
+      state.outfits.push(action.payload);
     },
-    deleteOutfit: (state, action: PayloadAction<number>) => {
-      state.savedOutfits = state.savedOutfits.filter(
-        (_, index) => index !== action.payload
+    deleteOutfit: (state, action: PayloadAction<string>) => {
+      state.outfits = state.outfits.filter(
+        (outfit) => outfit.id !== action.payload
       );
     },
   },
 });
 
-export const { saveOutfit, deleteOutfit } = outfitsSlice.actions;
+export const { addToOutfit, deleteOutfit } = outfitsSlice.actions;
 export default outfitsSlice.reducer;

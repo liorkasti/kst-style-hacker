@@ -27,6 +27,7 @@ import {
   setFilteredClothes,
 } from "../store/slices/clothes-slice";
 import { saveOutfit } from "../store/slices/outfits-slice";
+import ClothingItem from "../components/ClothingItem";
 
 const ClothesList: FC = () => {
   const [recommendations, setRecommendations] =
@@ -112,29 +113,10 @@ const ClothesList: FC = () => {
             alignItems='center'>
             {recommendations.map((item: ClothingItemType) => (
               <Grid item key={item.id} xs={12} sm={6} md={4} lg={3}>
-                <Paper className={classes.card} elevation={3}>
-                  <Grid container alignItems='center' spacing={2}>
-                    <Grid item xs={4}>
-                      <img
-                        className={classes.image}
-                        src='https://via.placeholder.com/100'
-                        alt={`${item.brand} ${item.type}`}
-                      />
-                    </Grid>
-                    <Grid item xs={8}>
-                      <Typography variant='h6'>{item.brand}</Typography>
-                      <Typography>{`${SERVICES.SIZE}: ${item.size}`}</Typography>
-                      <Typography>{`${SERVICES.COLOR}: ${item.color}`}</Typography>
-                      <Button
-                        variant='contained'
-                        color='primary'
-                        className={classes.button}
-                        onClick={() => handleSelectItem(item)}>
-                        {SERVICES.SELECT}
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </Paper>
+                <ClothingItem
+                  item={item}
+                  onSelect={() => handleSelectItem(item)}
+                />
               </Grid>
             ))}
           </Grid>
@@ -156,29 +138,10 @@ const ClothesList: FC = () => {
           alignItems='center'>
           {filteredItems.map((item: ClothingItemType) => (
             <Grid item key={item.id} xs={12} sm={6} md={4} lg={3}>
-              <Paper className={classes.card} elevation={3}>
-                <Grid container alignItems='center' spacing={2}>
-                  <Grid item xs={4}>
-                    <img
-                      className={classes.image}
-                      src='https://via.placeholder.com/100'
-                      alt={`${item.brand} ${item.type}`}
-                    />
-                  </Grid>
-                  <Grid item xs={8}>
-                    <Typography variant='h6'>{item.brand}</Typography>
-                    <Typography>{`${SERVICES.SIZE}: ${item.size}`}</Typography>
-                    <Typography>{`${SERVICES.COLOR}: ${item.color}`}</Typography>
-                    <Button
-                      variant='contained'
-                      color='primary'
-                      className={classes.button}
-                      onClick={() => handleSelectItem(item)}>
-                      {SERVICES.SELECT}
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Paper>
+              <ClothingItem
+                item={item}
+                onSelect={() => handleSelectItem(item)}
+              />
             </Grid>
           ))}
         </Grid>

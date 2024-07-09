@@ -1,42 +1,65 @@
-import React, { FC } from "react";
-import { ClothingItemType } from "../../../shared/types";
 import {
+  Button,
   Card,
   CardContent,
   CardMedia,
+  Grid,
+  Paper,
   Typography,
-  Button,
 } from "@mui/material";
+import { FC } from "react";
+import { SERVICES } from "../constants/strings";
 import { useStyles } from "../constants/styles";
+import { ClothingItemType } from "../constants/types";
 
 type ClothingItemProps = {
   item: ClothingItemType;
   onSelect: (item: ClothingItemType) => void;
+  isSelected?: boolean;
 };
 
-const ClothingItem: FC<ClothingItemProps> = ({ item, onSelect }) => {
+const ClothingItem: FC<ClothingItemProps> = ({
+  item,
+  onSelect,
+  isSelected,
+}) => {
   const classes = useStyles();
 
   return (
-    <Card className={classes.card}>
-      <CardMedia
-        component='img'
-        image='https://via.placeholder.com/100'
-        alt={`${item.brand} ${item.type}`}
-        className={classes.image}
-      />
-      <CardContent>
-        <Typography variant='h6'>{item.brand}</Typography>
-        <Typography>Size: {item.size}</Typography>
-        <Typography>Color: {item.color}</Typography>
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={() => onSelect(item)}>
-          Select
-        </Button>
-      </CardContent>
-    </Card>
+    <Paper className={classes.card} elevation={3}>
+      <Grid container alignItems='center' spacing={2}>
+        <Grid item xs={4}>
+          <img
+            className={classes.image}
+            src='https://via.placeholder.com/100'
+            alt={`${item.brand} ${item.type}`}
+          />
+        </Grid>
+        <Grid item xs={8}>
+          <Typography variant='h6'>{item.brand}</Typography>
+          <Typography>{`${SERVICES.SIZE}: ${item.size}`}</Typography>
+          <Typography>{`${SERVICES.COLOR}: ${item.color}`}</Typography>
+          {isSelected ? (
+            <Button
+              variant='contained'
+              color='secondary'
+              onClick={() => onSelect(item)}
+              className={classes.button}
+              fullWidth
+              sx={{ mt: 2 }}>
+              {SERVICES.DELETE_OUTFIT}
+            </Button>
+          ) : (
+            <Button
+              variant='contained'
+              color='primary'
+              onClick={() => onSelect(item)}>
+              {SERVICES.SELECT}
+            </Button>
+          )}
+        </Grid>
+      </Grid>
+    </Paper>
   );
 };
 

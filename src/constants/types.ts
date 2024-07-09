@@ -1,25 +1,3 @@
-export interface UserProps {
-  _id: string;
-  email: string;
-  password: string;
-}
-
-export type ClothingItemType = {
-  id: string;
-  type: string;
-  brand: string;
-  color: string;
-  size: string;
-};
-
-export interface Outfit {
-  shirt: ClothingItemType;
-  pants: ClothingItemType;
-  shoes: ClothingItemType;
-  creationDate: string;
-  creationTime: string;
-}
-
 export type FilterType = "shirtSize" | "color" | "shoesSize";
 export type SizeType = "S" | "M" | "L" | "XL" | "XXL";
 export type ShoesSizeType =
@@ -34,23 +12,31 @@ export type ShoesSizeType =
   | "46";
 export type ColorType = "Red" | "Blue" | "Black" | "White" | "Green";
 
-export type SavedSetType = {
-  setId: string;
-  userId: string;
+export type ClothingItemType = {
+  id: number;
   type: string;
-  items: ClothingItemType[];
-  createdAt?: Date;
-  is_set: boolean;
+  brand: string;
+  color: string;
+  size: string;
 };
+
+export interface ClothesState {
+  items: ClothingItemType[];
+  filteredItems: ClothingItemType[];
+  selected: ClothingItemType[];
+  shoesCount: number;
+  shirtsCount: number;
+  pantsCount: number;
+}
+
+export interface Outfit {
+  id: string;
+  items: ClothingItemType[];
+  creationDate: string;
+  creationTime: string;
+}
 
 export type ClothingItemProps = {
-  id: React.Key | null | undefined;
+  id: number;
   item: ClothingItemType;
 };
-
-export interface ToggleClothingItemProps {
-  data: SavedSetType[];
-  addFavorite: (setId: SavedSetType) => void;
-  removeFavorite: (setId: SavedSetType) => void;
-  isLoading: boolean;
-}
