@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -21,14 +20,16 @@ import {
   ClotheSizeType,
   ClothingItemType,
   ColorType,
+  OutfitProps,
 } from "../constants/types";
-import {
-  useClothesTypeItems,
-  useSelectedItems,
-} from "../hooks/useClothingItems";
 import { getNextType, getRecommendations } from "../hooks/useRecommende";
 import { RootState } from "../store";
-import { selectClothes, setFilteredItems } from "../store/slices/clothes-slice";
+import {
+  clearSelection,
+  selectClothes,
+  setFilteredItems,
+} from "../store/slices/clothes-slice";
+import { addToOutfit } from "../store/slices/clothes-slice";
 
 const ClothesList: FC = () => {
   const [recommendations, setRecommendations] = useState<ClothingItemType[]>(
@@ -44,21 +45,24 @@ const ClothesList: FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { data: clothingItems, isLoading, error } = useClothesTypeItems(type);
-  const { items, filteredItems } = useSelector(
+  // const { data: clothingItems, isLoading, error } = useClothesTypeItems(type);
+  const { items, filteredItems, selected } = useSelector(
     (state: RootState) => state.clothes
   );
+  const hasShoes = selected.some((i) => i.type === "shoes");
+  const hasShirt = selected.some((i) => i.type === "shirt");
+  const hasPants = selected.some((i) => i.type === "pants");
 
   useEffect(() => {
     if (items) {
       dispatch(setFilteredItems(type));
     }
     return () => {
-      setRecommendations([]);
       setSelectedSize("");
       setSelectedColor("");
+      setOpen(false);
     };
-  }, []);
+  }, [dispatch, items, type]);
 
   const filtered = useMemo(() => {
     if (!filteredItems) return [];
@@ -82,19 +86,31 @@ const ClothesList: FC = () => {
     return renderFilteredItems;
   }, [filteredItems, selectedSize, selectedColor, type]);
 
-  const handleSelectItem = (item: ClothingItemType) => {
-    const recommendations: ClothingItemType[] = getRecommendations(item, items);
-    dispatch(selectClothes(item));
-    // TODO: useMutation-> useSelectedItems(item).selectItem();
-
-    if (recommendations.length > 0) {
-      setRecommendations(recommendations);
-      navigate(`/clothing-list?type=${getNextType(item.type)}`, {
-        state: { recommendations },
-      });
-    } else {
+  useEffect(() => {
+    // Check if the selected items are complete the all 3 shoes, shirt, and pants types for an outfit set
+    if (hasShoes && hasShirt && hasPants) {
       setOpen(true);
+      const outfit: OutfitProps = {
+        id: new Date().toISOString(),
+        items: selected,
+        creationDate: new Date().toLocaleDateString(),
+        creationTime: new Date().toLocaleTimeString(),
+      };
+      // Dispatch the outfit to the store
+      dispatch(addToOutfit(outfit));
+      dispatch(clearSelection());
     }
+  }, [dispatch, hasShoes, hasShirt, hasPants, selected]);
+
+  const handleSelectItem = (item: ClothingItemType) => {
+    dispatch(selectClothes(item));
+
+    const nextItem = getNextType(item.type);
+    const recommendations: ClothingItemType[] = getRecommendations(item, items);
+    setRecommendations(recommendations);
+    navigate(`/clothing-list?type=${nextItem}`, {
+      state: { recommendations },
+    });
   };
 
   const handleClose = () => {
@@ -102,21 +118,8 @@ const ClothesList: FC = () => {
     navigate("/");
   };
 
-  if (isLoading) return <CircularProgress />;
-  if (error) return <Typography>Error loading items</Typography>;
-
-  console.log({
-    clothingItems,
-    items,
-    filteredItems,
-    filtered,
-  });
   return (
     <Box className={classes.root}>
-      <Typography mb={2} variant='h4'>
-        {SERVICES.SELECT_TYPE}
-        {type}
-      </Typography>
       {recommendations.length ? (
         <>
           <Typography mb={2} variant='h4'>
@@ -139,6 +142,10 @@ const ClothesList: FC = () => {
           </Grid>
         </>
       ) : null}
+      <Typography mb={2} variant='h4'>
+        {SERVICES.SELECT_TYPE}
+        {type}
+      </Typography>
       <Box p={4}>
         <FilterClothing
           type={type}

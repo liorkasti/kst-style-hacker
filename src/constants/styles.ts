@@ -102,6 +102,10 @@ export const useStyles = makeStyles({
   gridItem: {
     padding: 8,
   },
+  savedItemTitle: {
+    justifyContent: "center",
+    color: THEME.subtext,
+  },
   card: {
     padding: 16,
     marginBottom: 16,

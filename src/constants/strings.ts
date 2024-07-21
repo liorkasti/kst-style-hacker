@@ -31,4 +31,6 @@ export const SERVICES = {
   DELETE_OUTFIT: "Delete Outfit",
   SAVED_OUTFITS_TITLE: "Saved Outfits",
   NO_SAVED_OUTFITS: "No saved outfits available",
+  CREATION_DATE: "Creation Date",
+  CREATION_TIME: "Creation Time",
 };

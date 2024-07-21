@@ -7,28 +7,11 @@ import { useClothesTypeItems } from "../hooks/useClothingItems";
 import { RootState } from "../store";
 
 const Home: FC = () => {
-  const { data: clothingItems, isLoading: loadingItems } =
-    useClothesTypeItems("");
-  const {
-    items,
-    filteredItems,
-    selected,
-    shoesCount,
-    shirtsCount,
-    pantsCount,
-  } = useSelector((state: RootState) => state.clothes);
-
+  const { isLoading: loadingItems } = useClothesTypeItems("");
+  const { shoesCount, shirtsCount, pantsCount } = useSelector(
+    (state: RootState) => state.clothes
+  );
   const navigate = useNavigate();
-
-  console.log({
-    clothingItems,
-    items,
-    filteredItems,
-    shoesCount,
-    shirtsCount,
-    pantsCount,
-    selected,
-  });
   return (
     <Box>
       <Box p={4}>

@@ -22,3 +22,20 @@ export const fetchClothes = async (): Promise<ClothingItemType[]> => {
     return [];
   }
 };
+
+export const getItems = async () => {
+  const response = await clothesApi.get("/items");
+  return response.data;
+};
+
+export const addItem = async (item) => {
+  return await clothesApi.post("/clothing", item);
+};
+
+export const updateItem = async (item) => {
+  return await clothesApi.patch(`/clothing/${item.id}`, item);
+};
+
+export const deleteItem = async ({ id }) => {
+  return await clothesApi.delete(`/clothing/${id}`, id);
+};
