@@ -1,19 +1,10 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  CLOTHES,
-  CLOTHING_ITEMS,
-  FILTERED_CLOTHES,
-  SELECTED_ITEMS,
-} from "../react-query/query-keys";
-import { ClothesState, ClothingItemType } from "../constants/types";
-import { fetchClothes } from "../api/clothesApi";
+import { useQuery } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  selectClothes,
-  setClothes,
-  setFilteredItems,
-} from "../store/slices/clothes-slice";
+import { fetchClothes } from "../api/clothesApi";
+import { ClothingItemType } from "../constants/types";
+import { CLOTHING_ITEMS } from "../react-query/query-keys";
 import { RootState } from "../store";
+import { setClothes } from "../store/slices/clothes-slice";
 
 export const useClothingItems = () => {
   return useQuery({
@@ -45,6 +36,7 @@ export const useClothesTypeItems = (type: string) => {
   });
   if (isSuccess && !items.length) {
     dispatch(setClothes(data));
+    console.log(data);
   }
   // if (items.length > 0 && type !== "") dispatch(setFilteredItems(data));
   return {

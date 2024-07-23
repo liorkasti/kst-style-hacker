@@ -1,3 +1,12 @@
+import { SAVED_SETS } from "../react-query/query-keys";
+
+export const ENDPOINTS = {
+  HOME: "/",
+  SHOES: "/clothing-list?type=shoes",
+  SHIRTS: "/clothing-list?type=shirt",
+  PANTS: "/clothing-list?type=pants",
+  SAVED_SETS: "/saved-sets",
+};
 export const SCREEN_NAMES = {
   HOME: "Home",
   CLOTHING_LIST: "Clothing List",
@@ -27,7 +36,7 @@ export const SERVICES = {
   BRAND: "Brand",
   SELECT: "Select",
   SELECTED: "Selected",
-  SAVE_SET: "Save set",
+  SAVE_SET: "View Saved Sets",
   DELETE_OUTFIT: "Delete Outfit",
   SAVED_OUTFITS_TITLE: "Saved Outfits",
   NO_SAVED_OUTFITS: "No saved outfits available",

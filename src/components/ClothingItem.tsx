@@ -19,15 +19,15 @@ const ClothingItem: FC<ClothingItemProps> = ({
 
   return (
     <Paper className={classes.card} elevation={3}>
-      <Grid container alignItems='center' spacing={2}>
-        <Grid item xs={4}>
+      <Grid container direction='row' spacing={2}>
+        <Grid item xs={4} mr={3}>
           <img
             className={classes.image}
             src='https://via.placeholder.com/100'
             alt={`${item.brand} ${item.type}`}
           />
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={6}>
           <Typography variant='h6'>{item.brand}</Typography>
           <Typography>{`${SERVICES.SIZE}: ${item.size}`}</Typography>
           <Typography>{`${SERVICES.COLOR}: ${item.color}`}</Typography>

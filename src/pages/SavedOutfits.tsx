@@ -3,11 +3,7 @@ import { FC } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { SERVICES } from "../constants/strings";
 import { THEME, useStyles } from "../constants/styles";
-import {
-  ClothesState,
-  ClothingItemType,
-  OutfitProps,
-} from "../constants/types";
+import { ClothingItemType, OutfitProps } from "../constants/types";
 import { RootState } from "../store";
 import { deleteOutfit } from "../store/slices/clothes-slice";
 
@@ -19,8 +15,6 @@ const SavedOutfits: FC = () => {
   const handleDeleteOutfit = (id: string) => {
     dispatch(deleteOutfit(id));
   };
-
-  console.log({ outfits });
 
   return (
     <Box className={classes.root}>

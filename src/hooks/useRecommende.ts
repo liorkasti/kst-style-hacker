@@ -1,5 +1,5 @@
 import { sizeMapping, colorCombination } from "../constants/recommendations";
-import { ClothesTypesType, ClothingItemType } from "../constants/types";
+import { ClothingItemType } from "../constants/types";
 
 export const getRecommendations = (
   selectedItem: ClothingItemType,

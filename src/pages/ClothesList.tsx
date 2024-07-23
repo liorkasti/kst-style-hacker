@@ -25,11 +25,11 @@ import {
 import { getNextType, getRecommendations } from "../hooks/useRecommende";
 import { RootState } from "../store";
 import {
+  addToOutfit,
   clearSelection,
   selectClothes,
   setFilteredItems,
 } from "../store/slices/clothes-slice";
-import { addToOutfit } from "../store/slices/clothes-slice";
 
 const ClothesList: FC = () => {
   const [recommendations, setRecommendations] = useState<ClothingItemType[]>(
@@ -45,7 +45,6 @@ const ClothesList: FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  // const { data: clothingItems, isLoading, error } = useClothesTypeItems(type);
   const { items, filteredItems, selected } = useSelector(
     (state: RootState) => state.clothes
   );
@@ -62,7 +61,7 @@ const ClothesList: FC = () => {
       setSelectedColor("");
       setOpen(false);
     };
-  }, [dispatch, items, type]);
+  }, [items, type, dispatch]);
 
   const filtered = useMemo(() => {
     if (!filteredItems) return [];
@@ -84,10 +83,9 @@ const ClothesList: FC = () => {
       );
     }
     return renderFilteredItems;
-  }, [filteredItems, selectedSize, selectedColor, type]);
+  }, [filteredItems, selectedSize, selectedColor, type, selected]);
 
   useEffect(() => {
-    // Check if the selected items are complete the all 3 shoes, shirt, and pants types for an outfit set
     if (hasShoes && hasShirt && hasPants) {
       setOpen(true);
       const outfit: OutfitProps = {
@@ -96,7 +94,6 @@ const ClothesList: FC = () => {
         creationDate: new Date().toLocaleDateString(),
         creationTime: new Date().toLocaleTimeString(),
       };
-      // Dispatch the outfit to the store
       dispatch(addToOutfit(outfit));
       dispatch(clearSelection());
     }
@@ -104,7 +101,6 @@ const ClothesList: FC = () => {
 
   const handleSelectItem = (item: ClothingItemType) => {
     dispatch(selectClothes(item));
-
     const nextItem = getNextType(item.type);
     const recommendations: ClothingItemType[] = getRecommendations(item, items);
     setRecommendations(recommendations);
@@ -115,7 +111,9 @@ const ClothesList: FC = () => {
 
   const handleClose = () => {
     setOpen(false);
-    navigate("/");
+    navigate("/", {
+      state: { recommendations },
+    });
   };
 
   return (
@@ -125,21 +123,21 @@ const ClothesList: FC = () => {
           <Typography mb={2} variant='h4'>
             Recommendations:
           </Typography>
-          <Grid
-            container
-            spacing={2}
-            direction='row'
-            justifyContent='center'
-            alignItems='center'>
+          <Box className={classes.recommendationsContainer}>
             {recommendations.map((item: ClothingItemType) => (
-              <Grid item key={item.id} xs={12} sm={6} md={4} lg={3}>
+              <Grid
+                item
+                key={item.id}
+                className={classes.recommendationItem}
+                mr={2}
+                minWidth={250}>
                 <ClothingItem
                   item={item}
                   onSelect={() => handleSelectItem(item)}
                 />
               </Grid>
             ))}
-          </Grid>
+          </Box>
         </>
       ) : null}
       <Typography mb={2} variant='h4'>
@@ -147,19 +145,16 @@ const ClothesList: FC = () => {
         {type}
       </Typography>
       <Box p={4}>
-        <FilterClothing
-          type={type}
-          selectedSize={selectedSize}
-          setSelectedSize={setSelectedSize}
-          selectedColor={selectedColor}
-          setSelectedColor={setSelectedColor}
-        />
-        <Grid
-          container
-          spacing={2}
-          direction='row'
-          justifyContent='center'
-          alignItems='center'>
+        <Box className={classes.filterContainer}>
+          <FilterClothing
+            type={type}
+            selectedSize={selectedSize}
+            setSelectedSize={setSelectedSize}
+            selectedColor={selectedColor}
+            setSelectedColor={setSelectedColor}
+          />
+        </Box>
+        <Grid container spacing={2} className={classes.gridContainer}>
           {filtered.map((item: ClothingItemType) => (
             <Grid item key={item.id} xs={12} sm={6} md={4} lg={3}>
               <ClothingItem
@@ -172,7 +167,9 @@ const ClothesList: FC = () => {
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>{SERVICES.SAVE_SET}</DialogTitle>
           <DialogContent>
-            <DialogContentText>{`You have selected all items. Would you like to save this set?`}</DialogContentText>
+            <DialogContentText>
+              {`You have selected all items. Would you like to save this set?`}
+            </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color='primary'>

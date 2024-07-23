@@ -1,17 +1,9 @@
-//Original api given:
-// export const API_URL =
-//   "https://f32cf30e-6939-45f6-b650-40d5b43dc7f1.mock.pstmn.io/clothes";
-
 import axios from "axios";
 import { ClothingItemType } from "../constants/types";
 
-const clothesApi = axios.create({
-  baseURL: "http://localhost:5173",
-});
-
 //Mock data:
 export const API_URL =
-  "https://run.mocky.io/v3/791aa2d3-3f64-48d2-ab78-1a6cbb49efe1";
+  "https://run.mocky.io/v3/067e25c7-c865-4b09-b064-966b0dab4ed7";
 
 export const fetchClothes = async (): Promise<ClothingItemType[]> => {
   try {
@@ -23,19 +15,23 @@ export const fetchClothes = async (): Promise<ClothingItemType[]> => {
   }
 };
 
-export const getItems = async () => {
-  const response = await clothesApi.get("/items");
-  return response.data;
-};
+// const clothesApi = axios.create({
+//   baseURL: "http://localhost:5173",
+// });
 
-export const addItem = async (item) => {
-  return await clothesApi.post("/clothing", item);
-};
+// export const getItems = async () => {
+//   const response = await clothesApi.get("/items");
+//   return response.data;
+// };
 
-export const updateItem = async (item) => {
-  return await clothesApi.patch(`/clothing/${item.id}`, item);
-};
+// export const addItem = async (item) => {
+//   return await clothesApi.post("/clothing", item);
+// };
 
-export const deleteItem = async ({ id }) => {
-  return await clothesApi.delete(`/clothing/${id}`, id);
-};
+// export const updateItem = async (item) => {
+//   return await clothesApi.patch(`/clothing/${item.id}`, item);
+// };
+
+// export const deleteItem = async ({ id }) => {
+//   return await clothesApi.delete(`/clothing/${id}`, id);
+// };

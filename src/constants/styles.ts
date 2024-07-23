@@ -4,6 +4,7 @@ import backgroundDot from "../assets/background_dot2x.png";
 
 export const THEME = {
   primary: "#ff97cf",
+  hover: "#ff7dc2",
   secondary: "#22d3ee",
   thirdary: "#5B58AD",
   bkg: "#f5f5f5",
@@ -97,7 +98,6 @@ export const useStyles = makeStyles({
   gridContainer: {
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
   },
   gridItem: {
     padding: 8,
@@ -110,6 +110,7 @@ export const useStyles = makeStyles({
     padding: 16,
     marginBottom: 16,
     maxWidth: 600,
+    minWidth: 220,
   },
   filterContainer: {
     marginBottom: 16,
@@ -119,8 +120,7 @@ export const useStyles = makeStyles({
   },
   image: {
     height: 100,
-    width: "100%",
-    paddingRight: 16,
+    width: 100,
   },
   appBar: {
     width: "100%",
@@ -164,6 +164,17 @@ export const useStyles = makeStyles({
   },
   listItemText: {
     color: THEME.thirdary,
+  },
+  recommendationsContainer: {
+    display: "flex",
+    overflowX: "scroll",
+    padding: "10px",
+    marginBottom: "20px",
+  },
+  recommendationItem: {
+    minWidth: "150px",
+    marginRight: "20px",
+    width: "auto",
   },
 });
 
