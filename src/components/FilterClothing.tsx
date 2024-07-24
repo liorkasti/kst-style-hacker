@@ -26,7 +26,6 @@ const FilterClothing: FC<FilterClothingProps> = ({
           <InputLabel>{SERVICES.FILTER_BY_SIZE}</InputLabel>
           <Select
             value={selectedSize}
-            // defaultValue={"None"}
             onChange={(e) => setSelectedSize(e.target.value as ClotheSizeType)}
             label={SERVICES.FILTER_BY_SIZE}>
             <MenuItem value=''>
@@ -50,7 +49,7 @@ const FilterClothing: FC<FilterClothingProps> = ({
             <MenuItem value=''>
               <em>None</em>
             </MenuItem>
-            {Object.keys(colorCombination).map((color) => (
+            {Object.keys(colorCombination)?.map((color) => (
               <MenuItem key={color} value={color}>
                 {color}
               </MenuItem>

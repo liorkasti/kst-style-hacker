@@ -119,8 +119,10 @@ export const useStyles = makeStyles({
     marginTop: 8,
   },
   image: {
-    height: 100,
-    width: 100,
+    height: "100%",
+    width: "100%",
+    maxHeight: 100,
+    maxWidth: 100,
   },
   appBar: {
     width: "100%",

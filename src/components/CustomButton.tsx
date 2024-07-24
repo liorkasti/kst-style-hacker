@@ -3,7 +3,7 @@ import { Button, Grid } from "@mui/material";
 import { THEME } from "../constants/styles";
 
 type CustomButtonType = {
-  isDisabled: boolean | undefined;
+  isDisabled?: boolean | undefined;
   onClick: () => void;
   startIcon?: React.ReactNode;
   text: string;

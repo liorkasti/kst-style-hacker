@@ -1,79 +1,64 @@
-import {
-  Box,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Grid,
-  Typography,
-} from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { FC, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import ClothingItem from "../components/ClothingItem";
 import FilterClothing from "../components/FilterClothing";
+import SaveSetDialog from "../components/SaveSetDialog";
 import { SERVICES } from "../constants/strings";
 import { useStyles } from "../constants/styles";
 import {
   ClotheSizeType,
   ClothingItemType,
   ColorType,
-  OutfitProps,
 } from "../constants/types";
-import { getNextType, getRecommendations } from "../hooks/useRecommende";
+import { useClothingSelections } from "../hooks/useClothingSelections";
 import { RootState } from "../store";
 import {
-  addToOutfit,
-  clearSelection,
   selectClothes,
   setFilteredItems,
+  setItem,
   setRecommendations,
 } from "../store/slices/clothes-slice";
-import CustomButton from "../components/CustomButton";
-import SaveIcon from "@mui/icons-material/Save";
-import { useClothingSelections } from "../hooks/useClothingSelections";
+import { useOutfitEffect } from "../hooks/useOutfitEffect";
 
 const ClothesList: FC = () => {
+  const [showDialog, setShowDialog] = useState<boolean>(false);
   const [selectedSize, setSelectedSize] = useState<ClotheSizeType>("");
   const [selectedColor, setSelectedColor] = useState<ColorType>("");
-  const [open, setOpen] = useState(false);
 
-  const navigate = useNavigate();
   const location = useLocation();
   const type = new URLSearchParams(location.search).get("type") || "";
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { items, filteredItems, recommendations, selected } = useSelector(
+  const { item, items, filteredItems, recommendations, selected } = useSelector(
     (state: RootState) => state.clothes
   );
-  const { hasShoes, hasShirt, hasPants } = useClothingSelections(selected);
+  const { hasShoes, hasShirt, hasPants, nextItem } =
+    useClothingSelections(selected);
 
   useEffect(() => {
-    if (items) {
+    if (items.length) {
       dispatch(setFilteredItems(type));
     }
     return () => {
       setSelectedSize("");
       setSelectedColor("");
-      setOpen(false);
+      setRecommendations([]);
     };
-  }, [items, type, dispatch]);
+  }, [items, type, dispatch, item, recommendations]);
 
-  useEffect(() => {
-    if (hasShoes && hasShirt && hasPants) {
-      setOpen(true);
-      const outfit: OutfitProps = {
-        id: new Date().toISOString(),
-        items: selected,
-        creationDate: new Date().toLocaleDateString(),
-        creationTime: new Date().toLocaleTimeString(),
-      };
-      dispatch(addToOutfit(outfit));
-      dispatch(clearSelection());
-    }
-  }, [dispatch, hasShoes, hasShirt, hasPants, selected]);
+  useOutfitEffect(
+    selected,
+    hasShoes,
+    hasShirt,
+    hasPants,
+    items,
+    setShowDialog,
+    item,
+    nextItem
+  );
 
   const filtered = useMemo(() => {
     if (!filteredItems) return [];
@@ -95,19 +80,11 @@ const ClothesList: FC = () => {
       );
     }
     return renderFilteredItems;
-  }, [filteredItems, selectedSize, selectedColor, type, selected]);
+  }, [filteredItems, selectedSize, selectedColor]);
 
   const handleSelectItem = (item: ClothingItemType) => {
+    dispatch(setItem(item));
     dispatch(selectClothes(item));
-    const nextItem = getNextType(item.type);
-    const recommendations: ClothingItemType[] = getRecommendations(item, items);
-    dispatch(setRecommendations(recommendations));
-    navigate(`/clothing-list?type=${nextItem}`);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    navigate("/");
   };
 
   return (
@@ -125,7 +102,7 @@ const ClothesList: FC = () => {
         {recommendations?.length ? (
           <>
             <Typography mb={2} variant='h4'>
-              Recommendations:
+              {SERVICES.RECOMMENDATIONS}
             </Typography>
             <Box className={classes.recommendationsContainer}>
               {recommendations.map((item: ClothingItemType) => (
@@ -158,22 +135,7 @@ const ClothesList: FC = () => {
             </Grid>
           ))}
         </Grid>
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>{SERVICES.SAVE_SET}</DialogTitle>
-          <DialogContent>
-            <DialogContentText>{SERVICES.SAVE_SETS}</DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Grid pr={2} pb={2} mt={-2}>
-              <CustomButton
-                onClick={handleClose}
-                startIcon={<SaveIcon />}
-                text={SERVICES.SAVE_SET}
-                isDisabled={undefined}
-              />
-            </Grid>
-          </DialogActions>
-        </Dialog>
+        <SaveSetDialog showDialog={showDialog} setShowDialog={setShowDialog} />
       </Box>
     </Box>
   );

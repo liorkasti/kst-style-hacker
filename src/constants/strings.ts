@@ -36,6 +36,7 @@ export const SERVICES = {
   SELECTED: "Selected",
   SAVE_SETS: "You have selected all items. Would you like to save this set?",
   SAVE_SET: "Saved Set",
+  RECOMMENDATIONS: "Recommendations:",
   DELETE_OUTFIT: "Delete Outfit",
   SAVED_OUTFITS_TITLE: "Saved Outfits",
   NO_SAVED_OUTFITS: "No saved outfits available",

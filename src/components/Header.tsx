@@ -5,6 +5,7 @@ import {
 import {
   AppBar,
   Box,
+  Button,
   Divider,
   Drawer,
   IconButton,
@@ -57,11 +58,11 @@ const Header: React.FC<HeaderProps> = ({ title, showBackButton = false }) => {
           <Typography variant='h6' className={classes.title}>
             {title}
           </Typography>
-          <Typography
-            variant='h1'
+          <Button
+            onClick={() => navigate("/")}
             className={`${classes.hackaStyle} font-effect-neon`}>
-            {SERVICES.STYLE_HACKER_HEADER}
-          </Typography>
+            <Typography variant='h1'>{SERVICES.STYLE_HACKER_HEADER}</Typography>
+          </Button>
           <IconButton
             edge='start'
             color='inherit'
@@ -82,39 +83,33 @@ const Header: React.FC<HeaderProps> = ({ title, showBackButton = false }) => {
           onClick={toggleDrawer(false)}
           onKeyDown={toggleDrawer(false)}>
           <List>
-            <ListItem button onClick={() => navigate("/")}>
+            <ListItem onClick={() => navigate("/")}>
               <ListItemText
                 primary={SCREEN_NAMES.HOME}
                 classes={{ primary: classes.listItemText }}
               />
             </ListItem>
             <Divider />
-            <ListItem
-              button
-              onClick={() => navigate("/clothing-list?type=shoes")}>
+            <ListItem onClick={() => navigate("/clothing-list?type=shoes")}>
               <ListItemText
                 primary={SCREEN_NAMES.SHOES}
                 classes={{ primary: classes.listItemText }}
               />
             </ListItem>
-            <ListItem
-              button
-              onClick={() => navigate("/clothing-list?type=shirt")}>
+            <ListItem onClick={() => navigate("/clothing-list?type=shirt")}>
               <ListItemText
                 primary={SCREEN_NAMES.SHIRTS}
                 classes={{ primary: classes.listItemText }}
               />
             </ListItem>
-            <ListItem
-              button
-              onClick={() => navigate("/clothing-list?type=pants")}>
+            <ListItem onClick={() => navigate("/clothing-list?type=pants")}>
               <ListItemText
                 primary={SCREEN_NAMES.PANTS}
                 classes={{ primary: classes.listItemText }}
               />
             </ListItem>
             <Divider />
-            <ListItem button onClick={() => navigate("/saved-sets")}>
+            <ListItem onClick={() => navigate("/saved-sets")}>
               <ListItemText
                 primary={SCREEN_NAMES.SAVED_SETS}
                 classes={{ primary: classes.listItemText }}

@@ -6,13 +6,6 @@ import { CLOTHING_ITEMS } from "../react-query/query-keys";
 import { RootState } from "../store";
 import { setClothes } from "../store/slices/clothes-slice";
 
-export const useClothingItems = () => {
-  return useQuery({
-    queryKey: [CLOTHING_ITEMS],
-    // queryFn: fetchClothes,
-  });
-};
-
 export const useClothesTypeItems = (type: string) => {
   const dispatch = useDispatch();
   const fallback: ClothingItemType[] = [];
@@ -37,7 +30,6 @@ export const useClothesTypeItems = (type: string) => {
   if (isSuccess && !items.length) {
     dispatch(setClothes(data));
   }
-  // if (items.length > 0 && type !== "") dispatch(setFilteredItems(data));
   return {
     data: data as ClothingItemType[],
     isError,
@@ -46,9 +38,3 @@ export const useClothesTypeItems = (type: string) => {
     error,
   };
 };
-
-// export const useSelectedItems = (item: ClothingItemType) => {
-//   const queryClient = useQueryClient([CLOTHING_ITEMS]);
-
-//   queryClient.setQueryData;
-// };

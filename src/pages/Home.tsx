@@ -1,24 +1,28 @@
 import ShoesIcon from "@mui/icons-material/RollerSkating";
 import SaveIcon from "@mui/icons-material/Save";
 import { Box, CircularProgress, Grid, Typography } from "@mui/material";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ClothingItem from "../components/ClothingItem";
 import CustomButton from "../components/CustomButton";
+import { PantsIcon, ShirtIcon } from "../components/Icons";
+import SaveSetDialog from "../components/SaveSetDialog";
 import { ENDPOINTS, SERVICES } from "../constants/strings";
 import { THEME, useStyles } from "../constants/styles";
 import { ClothingItemType } from "../constants/types";
 import { useClothesTypeItems } from "../hooks/useClothingItems";
-import { getNextType, getRecommendations } from "../hooks/useRecommende";
-import { RootState } from "../store";
-import { selectClothes } from "../store/slices/clothes-slice";
 import { useClothingSelections } from "../hooks/useClothingSelections";
-import { PantsIcon, ShirtIcon } from "../components/Icons";
+import { useOutfitEffect } from "../hooks/useOutfitEffect";
+import { RootState } from "../store";
+import { selectClothes, setItem } from "../store/slices/clothes-slice";
 
 const Home: FC = () => {
   const { isLoading: loadingItems } = useClothesTypeItems("");
+  const [showDialog, setShowDialog] = useState<boolean>(false);
+
   const {
+    item,
     items,
     recommendations,
     selected,
@@ -31,13 +35,53 @@ const Home: FC = () => {
   const dispatch = useDispatch();
   const { hasShoes, hasShirt, hasPants } = useClothingSelections(selected);
 
+  const nextItem = "";
+
+  useOutfitEffect(
+    selected,
+    hasShoes,
+    hasShirt,
+    hasPants,
+    items,
+    setShowDialog,
+    item,
+    nextItem
+  );
+
+  // useEffect(() => {
+  //   if (hasShoes && hasShirt && hasPants) {
+  //     setShowDialog(true);
+  //     console.log({});
+
+  //     const outfit: OutfitProps = {
+  //       id: new Date().toISOString(),
+  //       items: selected,
+  //       creationDate: new Date().toLocaleDateString(),
+  //       creationTime: new Date().toLocaleTimeString(),
+  //     };
+  //     dispatch(addToOutfit(outfit));
+  //     dispatch(clearSelection());
+  //   }
+  //   if (item) {
+  //     const updatedRecommendations: ClothingItemType[] = getRecommendations(
+  //       item,
+  //       items
+  //     );
+  //     console.log({
+  //       item,
+  //       updatedRecommendations,
+  //       hasShoes,
+  //       hasShirt,
+  //       hasPants,
+  //     });
+
+  //     dispatch(setRecommendations(updatedRecommendations));
+  //   }
+  // }, [dispatch, selected, hasShoes, hasShirt, hasPants, item]);
+
   const handleSelectItem = (item: ClothingItemType) => {
+    dispatch(setItem(item));
     dispatch(selectClothes(item));
-    const nextItem = getNextType(item.type);
-    const recommendations: ClothingItemType[] = getRecommendations(item, items);
-    navigate(`/clothing-list?type=${nextItem}`, {
-      state: { recommendations },
-    });
   };
 
   return (
@@ -76,7 +120,7 @@ const Home: FC = () => {
                     state: { recommendations },
                   })
                 }
-                startIcon={<ShirtIcon />}
+                startIcon={<ShirtIcon hasShirt={false} />}
                 text={SERVICES.SELECT_SHIRT}
               />
             </Grid>
@@ -92,7 +136,7 @@ const Home: FC = () => {
                     state: { recommendations },
                   })
                 }
-                startIcon={<PantsIcon />}
+                startIcon={<PantsIcon hasPants={false} />}
                 text={SERVICES.SELECT_PANTS}
               />
             </Grid>
@@ -111,7 +155,7 @@ const Home: FC = () => {
         {recommendations?.length ? (
           <>
             <Typography mb={2} variant='h4'>
-              Recommendations:
+              {SERVICES.RECOMMENDATIONS}
             </Typography>
             <Box className={classes.recommendationsContainer}>
               {recommendations.map((item: ClothingItemType) => (
@@ -131,6 +175,7 @@ const Home: FC = () => {
           </>
         ) : null}
       </Box>
+      <SaveSetDialog showDialog={showDialog} setShowDialog={setShowDialog} />
     </Box>
   );
 };

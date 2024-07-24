@@ -6,6 +6,13 @@ import {
 } from "../../constants/types";
 
 const initialState: ClothesState = {
+  item: {
+    id: 0,
+    type: "",
+    brand: "",
+    color: "",
+    size: "",
+  },
   items: [],
   filteredItems: [],
   recommendations: [],
@@ -36,6 +43,9 @@ const clothesSlice = createSlice({
       state.filteredItems = state.items.filter(
         (item) => item.type === action.payload
       );
+    },
+    setItem: (state, action: PayloadAction<ClothingItemType>) => {
+      state.item = action.payload;
     },
     selectClothes: (state, action: PayloadAction<ClothingItemType>) => {
       state.selected.push(action.payload);
@@ -69,6 +79,7 @@ export const {
   setClothes,
   setFilteredItems,
   setRecommendations,
+  setItem,
   selectClothes,
   clearSelection,
   addToOutfit,

@@ -19,6 +19,7 @@ const ClothingItem: FC<ClothingItemProps> = ({ item, onSelect, isSaved }) => {
     <Paper className={classes.card} elevation={3}>
       <Grid container direction='row' spacing={2}>
         <Grid item xs={4} mr={4}>
+          <Typography>{item.type}</Typography>
           <img
             className={classes.image}
             src='https://via.placeholder.com/100'
@@ -33,14 +34,14 @@ const ClothingItem: FC<ClothingItemProps> = ({ item, onSelect, isSaved }) => {
             <CustomButton
               onClick={() => onSelect(item)}
               text={SERVICES.DELETE_OUTFIT}
-              isDisabled={undefined}
+              isDisabled={false}
             />
           ) : (
             <CustomButton
               onClick={() => onSelect(item)}
               text={SERVICES.SELECT}
               startIcon={<CheckroomIcon />}
-              isDisabled={undefined}
+              isDisabled={false}
             />
           )}
         </Grid>

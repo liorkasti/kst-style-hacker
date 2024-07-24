@@ -64,7 +64,7 @@ const SavedOutfits: FC = () => {
                     text={SERVICES.DELETE_OUTFIT}
                     color={THEME.secondary}
                     hover={THEME.secondary}
-                    isDisabled={undefined}
+                    isDisabled={false}
                   />
                 </Paper>
               </Grid>
