@@ -8,6 +8,7 @@ import {
 const initialState: ClothesState = {
   items: [],
   filteredItems: [],
+  recommendations: [],
   outfits: [],
   selected: [],
   shoesCount: 0,
@@ -44,6 +45,9 @@ const clothesSlice = createSlice({
       else if (type === "shirt") state.shirtsCount--;
       else if (type === "pants") state.pantsCount--;
     },
+    setRecommendations: (state, action: PayloadAction<ClothingItemType[]>) => {
+      state.recommendations = action.payload;
+    },
     addToOutfit: (state, action: PayloadAction<OutfitProps>) => {
       state.outfits.push(action.payload);
     },
@@ -64,6 +68,7 @@ const clothesSlice = createSlice({
 export const {
   setClothes,
   setFilteredItems,
+  setRecommendations,
   selectClothes,
   clearSelection,
   addToOutfit,

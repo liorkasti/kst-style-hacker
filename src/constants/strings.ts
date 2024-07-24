@@ -1,5 +1,3 @@
-import { SAVED_SETS } from "../react-query/query-keys";
-
 export const ENDPOINTS = {
   HOME: "/",
   SHOES: "/clothing-list?type=shoes",
@@ -36,7 +34,8 @@ export const SERVICES = {
   BRAND: "Brand",
   SELECT: "Select",
   SELECTED: "Selected",
-  SAVE_SET: "View Saved Sets",
+  SAVE_SETS: "You have selected all items. Would you like to save this set?",
+  SAVE_SET: "Saved Set",
   DELETE_OUTFIT: "Delete Outfit",
   SAVED_OUTFITS_TITLE: "Saved Outfits",
   NO_SAVED_OUTFITS: "No saved outfits available",

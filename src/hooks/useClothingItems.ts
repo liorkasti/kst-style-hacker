@@ -36,7 +36,6 @@ export const useClothesTypeItems = (type: string) => {
   });
   if (isSuccess && !items.length) {
     dispatch(setClothes(data));
-    console.log(data);
   }
   // if (items.length > 0 && type !== "") dispatch(setFilteredItems(data));
   return {

@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -29,12 +28,13 @@ import {
   clearSelection,
   selectClothes,
   setFilteredItems,
+  setRecommendations,
 } from "../store/slices/clothes-slice";
+import CustomButton from "../components/CustomButton";
+import SaveIcon from "@mui/icons-material/Save";
+import { useClothingSelections } from "../hooks/useClothingSelections";
 
 const ClothesList: FC = () => {
-  const [recommendations, setRecommendations] = useState<ClothingItemType[]>(
-    []
-  );
   const [selectedSize, setSelectedSize] = useState<ClotheSizeType>("");
   const [selectedColor, setSelectedColor] = useState<ColorType>("");
   const [open, setOpen] = useState(false);
@@ -45,12 +45,10 @@ const ClothesList: FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { items, filteredItems, selected } = useSelector(
+  const { items, filteredItems, recommendations, selected } = useSelector(
     (state: RootState) => state.clothes
   );
-  const hasShoes = selected.some((i) => i.type === "shoes");
-  const hasShirt = selected.some((i) => i.type === "shirt");
-  const hasPants = selected.some((i) => i.type === "pants");
+  const { hasShoes, hasShirt, hasPants } = useClothingSelections(selected);
 
   useEffect(() => {
     if (items) {
@@ -62,6 +60,20 @@ const ClothesList: FC = () => {
       setOpen(false);
     };
   }, [items, type, dispatch]);
+
+  useEffect(() => {
+    if (hasShoes && hasShirt && hasPants) {
+      setOpen(true);
+      const outfit: OutfitProps = {
+        id: new Date().toISOString(),
+        items: selected,
+        creationDate: new Date().toLocaleDateString(),
+        creationTime: new Date().toLocaleTimeString(),
+      };
+      dispatch(addToOutfit(outfit));
+      dispatch(clearSelection());
+    }
+  }, [dispatch, hasShoes, hasShirt, hasPants, selected]);
 
   const filtered = useMemo(() => {
     if (!filteredItems) return [];
@@ -85,65 +97,21 @@ const ClothesList: FC = () => {
     return renderFilteredItems;
   }, [filteredItems, selectedSize, selectedColor, type, selected]);
 
-  useEffect(() => {
-    if (hasShoes && hasShirt && hasPants) {
-      setOpen(true);
-      const outfit: OutfitProps = {
-        id: new Date().toISOString(),
-        items: selected,
-        creationDate: new Date().toLocaleDateString(),
-        creationTime: new Date().toLocaleTimeString(),
-      };
-      dispatch(addToOutfit(outfit));
-      dispatch(clearSelection());
-    }
-  }, [dispatch, hasShoes, hasShirt, hasPants, selected]);
-
   const handleSelectItem = (item: ClothingItemType) => {
     dispatch(selectClothes(item));
     const nextItem = getNextType(item.type);
     const recommendations: ClothingItemType[] = getRecommendations(item, items);
-    setRecommendations(recommendations);
-    navigate(`/clothing-list?type=${nextItem}`, {
-      state: { recommendations },
-    });
+    dispatch(setRecommendations(recommendations));
+    navigate(`/clothing-list?type=${nextItem}`);
   };
 
   const handleClose = () => {
     setOpen(false);
-    navigate("/", {
-      state: { recommendations },
-    });
+    navigate("/");
   };
 
   return (
     <Box className={classes.root}>
-      {recommendations.length ? (
-        <>
-          <Typography mb={2} variant='h4'>
-            Recommendations:
-          </Typography>
-          <Box className={classes.recommendationsContainer}>
-            {recommendations.map((item: ClothingItemType) => (
-              <Grid
-                item
-                key={item.id}
-                className={classes.recommendationItem}
-                mr={2}
-                minWidth={250}>
-                <ClothingItem
-                  item={item}
-                  onSelect={() => handleSelectItem(item)}
-                />
-              </Grid>
-            ))}
-          </Box>
-        </>
-      ) : null}
-      <Typography mb={2} variant='h4'>
-        {SERVICES.SELECT_TYPE}
-        {type}
-      </Typography>
       <Box p={4}>
         <Box className={classes.filterContainer}>
           <FilterClothing
@@ -154,9 +122,35 @@ const ClothesList: FC = () => {
             setSelectedColor={setSelectedColor}
           />
         </Box>
+        {recommendations?.length ? (
+          <>
+            <Typography mb={2} variant='h4'>
+              Recommendations:
+            </Typography>
+            <Box className={classes.recommendationsContainer}>
+              {recommendations.map((item: ClothingItemType) => (
+                <Grid
+                  item
+                  key={item.id}
+                  className={classes.recommendationItem}
+                  mr={2}
+                  minWidth={250}>
+                  <ClothingItem
+                    item={item}
+                    onSelect={() => handleSelectItem(item)}
+                  />
+                </Grid>
+              ))}
+            </Box>
+          </>
+        ) : null}
+        <Typography mb={2} variant='h4'>
+          {SERVICES.SELECT_TYPE}
+          {type}
+        </Typography>
         <Grid container spacing={2} className={classes.gridContainer}>
           {filtered.map((item: ClothingItemType) => (
-            <Grid item key={item.id} xs={12} sm={6} md={4} lg={3}>
+            <Grid item key={item.id} xs={12} sm={8} md={4} lg={3}>
               <ClothingItem
                 item={item}
                 onSelect={() => handleSelectItem(item)}
@@ -167,14 +161,17 @@ const ClothesList: FC = () => {
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>{SERVICES.SAVE_SET}</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              {`You have selected all items. Would you like to save this set?`}
-            </DialogContentText>
+            <DialogContentText>{SERVICES.SAVE_SETS}</DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} color='primary'>
-              {SERVICES.SAVE_SET}
-            </Button>
+            <Grid pr={2} pb={2} mt={-2}>
+              <CustomButton
+                onClick={handleClose}
+                startIcon={<SaveIcon />}
+                text={SERVICES.SAVE_SET}
+                isDisabled={undefined}
+              />
+            </Grid>
           </DialogActions>
         </Dialog>
       </Box>

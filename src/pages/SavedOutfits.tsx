@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import { FC } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { SERVICES } from "../constants/strings";
@@ -6,6 +6,8 @@ import { THEME, useStyles } from "../constants/styles";
 import { ClothingItemType, OutfitProps } from "../constants/types";
 import { RootState } from "../store";
 import { deleteOutfit } from "../store/slices/clothes-slice";
+import CustomButton from "../components/CustomButton";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const SavedOutfits: FC = () => {
   const dispatch = useDispatch();
@@ -56,15 +58,14 @@ const SavedOutfits: FC = () => {
                       </Grid>
                     ))}
                   </Grid>
-                  <Button
-                    variant='contained'
-                    color='secondary'
+                  <CustomButton
                     onClick={() => handleDeleteOutfit(item.id)}
-                    className={classes.button}
-                    fullWidth
-                    sx={{ mt: 2 }}>
-                    {SERVICES.DELETE_OUTFIT}
-                  </Button>
+                    startIcon={<DeleteIcon />}
+                    text={SERVICES.DELETE_OUTFIT}
+                    color={THEME.secondary}
+                    hover={THEME.secondary}
+                    isDisabled={undefined}
+                  />
                 </Paper>
               </Grid>
             ))

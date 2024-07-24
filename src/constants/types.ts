@@ -9,6 +9,7 @@ export type ClothingItemType = {
 export interface ClothesState {
   items: ClothingItemType[];
   filteredItems: ClothingItemType[];
+  recommendations?: ClothingItemType[];
   outfits: OutfitProps[];
   selected: ClothingItemType[];
   shoesCount: number;

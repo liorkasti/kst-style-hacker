@@ -8,13 +8,14 @@ export const getRecommendations = (
   if (!clothingItems) return [];
 
   const recommendedItems: ClothingItemType[] = [];
+  const selectedType = selectedItem.type;
 
   // Step 1: Recommend based on size
-  const sizeRecommendations =
-    sizeMapping[selectedItem.type]?.[selectedItem.size];
+  const sizeRecommendations = sizeMapping[selectedType]?.[selectedItem.size];
   if (sizeRecommendations) {
-    const sizeFilteredItems = clothingItems.filter((item) =>
-      sizeRecommendations.includes(item.size)
+    const sizeFilteredItems = clothingItems.filter(
+      (item) =>
+        sizeRecommendations.includes(item.size) && item.type !== selectedType
     );
     recommendedItems.push(...sizeFilteredItems);
   }
@@ -22,8 +23,9 @@ export const getRecommendations = (
   // Step 2: Recommend based on color
   const colorRecommendations = colorCombination[selectedItem.color];
   if (colorRecommendations) {
-    const colorFilteredItems = clothingItems.filter((item) =>
-      colorRecommendations.includes(item.color)
+    const colorFilteredItems = clothingItems.filter(
+      (item) =>
+        colorRecommendations.includes(item.color) && item.type !== selectedType
     );
     recommendedItems.push(...colorFilteredItems);
   }
@@ -32,17 +34,6 @@ export const getRecommendations = (
 
   return uniqueRecommendedItems.filter((item) => item.id !== selectedItem.id);
 };
-
-// קבלת מידות מומלצות לפי סוגים שונים
-export function getRecommendedSizes(type: string, size: string): string[] {
-  const sizeTypeMapping = sizeMapping[type];
-  if (!sizeTypeMapping || !sizeTypeMapping[size]) return [];
-  return Object.values(sizeTypeMapping[size]);
-}
-// קבלת צבעים מומלצים
-export function getRecommendedColors(color: string): string[] {
-  return colorCombination[color] || [];
-}
 
 export const getNextType = (currentType: string): string => {
   const types = ["shoes", "shirt", "pants"];
